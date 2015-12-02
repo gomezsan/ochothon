@@ -29,6 +29,7 @@ from threading import Thread
 from toolset.io import fire, run
 from toolset.tool import Template
 from yaml import YAMLError
+import re
 
 #: Our ochopod logger.
 logger = logging.getLogger('ochopod')
@@ -110,9 +111,29 @@ class _Automation(Thread):
                 stamp = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d-%H-%M-%S')
                 qualified = '%s.%s' % (self.namespace, cfg['cluster'])
                 application = 'ochopod.%s-%s' % (qualified, stamp)
-                if qualified in self.overrides:
 
-                    blk = self.overrides[qualified]
+                #
+                # - use regexps to look for overrides
+                # - can match multiple overrides
+                # - used for general properties
+                #
+                matches = [key for key, _ in self.overrides.iteritems()
+                           if key != qualified and re.search(key, qualified)]
+                blk = {}
+                if matches:
+                    # iterate trough all the key matches merging the overrides
+                    for key in matches:
+                        blk = merge(blk, self.overrides[key])
+                #
+                # - use the most specific overrides over the general ones
+                #
+                if qualified in self.overrides:
+                    blk = merge(blk, self.overrides[qualified])
+
+                #
+                # - merge the overrides with the current configuration
+                #
+                if blk:
                     logger.debug('%s : overriding %d settings (%s)' % (self.template, len(blk), qualified))
                     cfg['settings'] = merge(cfg['settings'], blk)
 
@@ -333,7 +354,8 @@ def go():
             for path in args.overrides:
                 try:
                     with open(path, 'r') as f:
-                        overrides.update(yaml.load(f))
+                        logger.debug('merging %s into overrides' % path)
+                        overrides = merge(overrides, yaml.load(f))
 
                 except IOError:
 
