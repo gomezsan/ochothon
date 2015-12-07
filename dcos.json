@@ -6,15 +6,12 @@
     {
         "ochopod_cluster":  "portal",
         "ochopod_debug":    "true",
-        "ochopod_token":    "UPTOWN_GIRL"
+        "ochopod_token":    ""
     },
     "acceptedResourceRoles":
         [
             "slave_public"
         ],
-    "uris": [
-        "file:///home/core/docker.tar.gz"
-    ],
     "container":
     {
         "type":"DOCKER",
@@ -22,7 +19,7 @@
         {
             "forcePullImage":               true,
             "network":                      "BRIDGE",
-            "image":                        "gomesa/ochothon:1.0.2",
+            "image":                        "autodeskcloud/ochothon:1.0.2",
             "portMappings":
                 [
                     {
