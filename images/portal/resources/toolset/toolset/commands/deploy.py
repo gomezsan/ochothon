@@ -21,6 +21,7 @@ import os
 import time
 import yaml
 
+from fnmatch import fnmatch
 from ochopod.core.fsm import diagnostic
 from ochopod.core.utils import merge, retry, shell
 from random import choice
@@ -29,7 +30,7 @@ from threading import Thread
 from toolset.io import fire, run
 from toolset.tool import Template
 from yaml import YAMLError
-import re
+
 
 #: Our ochopod logger.
 logger = logging.getLogger('ochopod')
@@ -118,7 +119,7 @@ class _Automation(Thread):
                 # - used for general properties
                 #
                 matches = [key for key, _ in self.overrides.iteritems()
-                           if key != qualified and re.search(key, qualified)]
+                           if key != qualified and fnmatch(qualified, key)]
                 blk = {}
                 if matches:
                     # iterate trough all the key matches merging the overrides
