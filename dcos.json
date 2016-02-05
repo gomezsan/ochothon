@@ -19,7 +19,7 @@
         {
             "forcePullImage":               true,
             "network":                      "BRIDGE",
-            "image":                        "autodeskcloud/ochothon:1.0.2",
+            "image":                        "quay.io/t_gomesa/ochothon",
             "portMappings":
                 [
                     {
