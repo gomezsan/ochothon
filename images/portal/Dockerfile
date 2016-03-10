@@ -1,4 +1,4 @@
-FROM autodeskcloud/pod:1.0.7
+FROM quay.io/t_gomesa/pod
 
 #
 # - add dnsutils (to get dig)
